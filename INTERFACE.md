@@ -24,8 +24,9 @@ p_1 w_1
 p_n w_n
 ```
 
-Hypothèses de départ (à confirmer avec l'enseignante) : plage `R01000`, familles `StronglyCorrelated` et `SubsetSum`, n = 100 et 500, 5 instances par famille.
+Hypothèses de départ (à confirmer avec l'enseignante) : plage `R01000`, familles `StronglyCorrelated` et `SubsetSum`, n = 100 et 500, 5 instances par famille et par taille (soit 20 instances).
 
+**Règle du test aveugle.** Les instances du test aveugle ne sont jamais déposées dans le dépôt avant le 5 décembre. Elles restent chez l'équipe 1.
 Organisation des fichiers :
 
 ```
@@ -81,7 +82,7 @@ Les gloutons sont placés dans `src/greedy.py`, le voisinage et les mouvements d
 Chaque algorithme (recherche locale, tabou, recuit, AG...) est une fonction qui a cette forme :
 
 ```python
-def run(inst: Instance, x0: np.ndarray | None, seed: int, **params) -> dict:
+def run(inst: Instance, x0: np.ndarray | None, seed: int, max_evals: int, **params) -> dict:
     ...
 ```
 
@@ -123,6 +124,7 @@ Un fichier CSV par algorithme et par série de tests, dans `results/`, encodage 
 | `run_id` | numéro de l'exécution |
 | `seed` | graine utilisée |
 | `start_id` | numéro de la solution de départ ; vide pour les AG |
+- `max_evals` : budget maximal d'évaluations du gain, fixé par le protocole et identique pour tous les algorithmes.
 | `params` | paramètres, au format JSON compact |
 | `best_gain` | meilleur gain trouvé |
 | `optimum` | optimum exact de l'instance |
@@ -156,3 +158,4 @@ Par algorithme et par instance (ou famille) :
 2. Le type `np.int8` pour les solutions et la structure `Instance` conviennent-ils ?
 3. La stratégie de `repair` (retirer d'abord le plus mauvais ratio p/w) vous convient-elle, ou voulez-vous aussi une phase d'ajout glouton ?
 4. Nombre de solutions de départ `k` et nombre de répétitions : proposition de départ `k = 5` et 10 exécutions.
+5. Le script de benchmark sera livré après le 20 novembre. D'ici là, êtes-vous d'accord pour écrire vos propres CSV d'essai, au même format que la section 7 ?
