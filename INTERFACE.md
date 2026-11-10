@@ -27,6 +27,7 @@ p_n w_n
 Hypothèses de départ (à confirmer avec l'enseignante) : plage `R01000`, familles `StronglyCorrelated` et `SubsetSum`, n = 100 et 500, 5 instances par famille et par taille (soit 20 instances).
 
 **Règle du test aveugle.** Les instances du test aveugle ne sont jamais déposées dans le dépôt avant le 5 décembre. Elles restent chez l'équipe 1.
+
 Organisation des fichiers :
 
 ```
@@ -34,7 +35,7 @@ data/<famille>/n<taille>/<nom_fichier>.kp
 data/optimums.csv        # colonnes : instance, optimum
 ```
 
-Le champ `instance` utilisé partout (CSV, optimums) est `<famille>_n<taille>_<numero>`, par exemple `StronglyCorrelated_n100_01`.
+  Le champ `instance` utilisé partout (CSV, optimums) est `<famille>_n<taille>_<plage>_<fichier>`, par exemple `StronglyCorrelated_n00100_R01000_s000`.
 
 ## 3. Structures de données
 
@@ -44,7 +45,7 @@ import numpy as np
 
 @dataclass(frozen=True)
 class Instance:
-    name: str           # ex. "StronglyCorrelated_n100_01"
+    name: str           # ex. "StronglyCorrelated_n00100_R01000_s000"
     n: int              # nombre d'objets
     c: int              # capacité
     p: np.ndarray       # profits, shape (n,), dtype int64
@@ -62,7 +63,7 @@ Une **solution** est un vecteur binaire NumPy `x` de forme `(n,)` et de type `np
 | `is_feasible(inst, x) -> bool` | Vrai si le poids total ne dépasse pas `c`. |
 | `total_weight(inst, x) -> int` | Poids total de la solution. |
 | `gain(inst, x) -> int` | Profit total de la solution. |
-| `repair(inst, x, rng) -> np.ndarray` | Rend `x` admissible : retire des objets jusqu'à respecter `c`, en commençant par le plus mauvais ratio p/w. Renvoie `x` inchangé s'il est déjà admissible. |
+| `repair(inst, x) -> np.ndarray` | Rend `x` admissible : retire des objets jusqu'à respecter `c`, en commençant par le plus mauvais ratio p/w. Renvoie `x` inchangé s'il est déjà admissible. |
 | `starting_solutions(inst, k, seed) -> list[np.ndarray]` | `k` solutions de départ admissibles, identiques pour tous les algorithmes (voir section 6). |
 
 ## 5. Fonctions de l'équipe 2 (fournies à l'équipe 3)
@@ -88,6 +89,7 @@ def run(inst: Instance, x0: np.ndarray | None, seed: int, max_evals: int, **para
 
 - `x0` : solution de départ (métaheuristiques à solution unique). Pour les AG, on passe `None` et la population initiale est construite avec `seed`.
 - `seed` : graine du générateur aléatoire de cette exécution.
+- `max_evals` : budget maximal d'évaluations du gain, fixé par le protocole et identique pour tous les algorithmes.
 - `params` : paramètres propres à l'algorithme (taille de la liste tabou, température initiale, taille de population...).
 
 Elle renvoie un dictionnaire :
@@ -124,7 +126,6 @@ Un fichier CSV par algorithme et par série de tests, dans `results/`, encodage 
 | `run_id` | numéro de l'exécution |
 | `seed` | graine utilisée |
 | `start_id` | numéro de la solution de départ ; vide pour les AG |
-- `max_evals` : budget maximal d'évaluations du gain, fixé par le protocole et identique pour tous les algorithmes.
 | `params` | paramètres, au format JSON compact |
 | `best_gain` | meilleur gain trouvé |
 | `optimum` | optimum exact de l'instance |
