@@ -35,9 +35,11 @@ data/<famille>/<taille>/<plage>/<fichier>.kp
 data/optimums.csv        # colonnes : instance, optimum
 ```
 
+`<taille>` s'écrit `n` suivi de n sur 5 chiffres : `n00100`, `n00500`.
+
 Exemple : `data/StronglyCorrelated/n00100/R01000/s000.kp`.
 
-Le champ `instance` utilisé partout (CSV, optimums) est `<famille>_<taille>_<plage>_<fichier>`, par exemple `StronglyCorrelated_n00100_R01000_s000`.
+Le champ `instance` utilisé partout (CSV, optimums) est `<famille>_<taille>_<plage>_<fichier>`, avec `<taille>` au format `n00100` : par exemple `StronglyCorrelated_n00100_R01000_s000`. `read_instance` et `data/optimums.csv` utilisent ce même format.
 
 ## 3. Structures de données
 
@@ -120,14 +122,14 @@ Un fichier CSV par algorithme et par série de tests, dans `results/`, encodage 
 | Colonne | Contenu |
 |---|---|
 | `team` | 2 ou 3 |
-| `algorithm` | `local_search`, `tabu`, `annealing`, `prob_local_search`, `ga` |
+| `algorithm` | `greedy_ratio`, `greedy_profit`, `local_search`, `tabu`, `annealing`, `prob_local_search`, `ga` |
 | `variant` | variante (ex. `tournoi_2pts`) ; vide s'il n'y en a pas |
 | `family` | `StronglyCorrelated` ou `SubsetSum` |
 | `instance` | nom de l'instance (section 2) |
 | `n` | nombre d'objets |
 | `run_id` | numéro de l'exécution |
 | `seed` | graine utilisée |
-| `start_id` | numéro de la solution de départ ; vide pour les AG |
+| `start_id` | numéro de la solution de départ ; vide pour les AG et les gloutons |
 | `params` | paramètres, au format JSON compact |
 | `best_gain` | meilleur gain trouvé |
 | `optimum` | optimum exact de l'instance |
@@ -139,9 +141,9 @@ Un fichier CSV par algorithme et par série de tests, dans `results/`, encodage 
 | `evaluations` | nombre d'évaluations |
 | `max_evals` | budget d'évaluations de l'exécution (même valeur pour tous les algorithmes sur une instance) |
 
-**Identification d'une ligne.** Une ligne est identifiée par (`algorithm`, `variant`, `instance`, `start_id`, `run_id`). Algorithmes à solution unique : `start_id` de 0 à 4 et `run_id` de 0 à 9 (50 lignes par instance). Algorithmes génétiques : `start_id` vide, `run_id` de 0 à 9. Algorithmes déterministes : une ligne par départ, avec `run_id = 0` et `seed = 0`. Dans tous les cas, `seed = run_id`.
+**Identification d'une ligne.** Une ligne est identifiée par (`algorithm`, `variant`, `instance`, `start_id`, `run_id`). Algorithmes à solution unique : `start_id` de 0 à 4 et `run_id` de 0 à 9 (50 lignes par instance). Algorithmes génétiques : `start_id` vide, `run_id` de 0 à 9. Algorithmes déterministes avec départ : une ligne par départ, avec `run_id = 0` et `seed = 0`. Gloutons : pas de solution de départ, donc une seule ligne par instance, avec `start_id` vide, `run_id = 0` et `seed = 0`. Dans tous les cas, `seed = run_id`.
 
-**Historique de convergence.** Un fichier JSON par (algorithme, variante, instance) dans `results/history/`, nommé `<algorithm>_<variant>_<instance>.json`. Il contient, pour chaque exécution, `start_id`, `run_id` et `history`. Il est écrit par `benchmark.py`.
+**Historique de convergence.** Un fichier JSON par (algorithme, variante, instance) dans `results/history/`, nommé `<algorithm>__<variant>__<instance>.json`, ou `<algorithm>__<instance>.json` quand `variant` est vide. Il contient, pour chaque exécution, `start_id`, `run_id` et `history`. Il est écrit par `benchmark.py`.
 
 Le script `benchmark.py` (équipe 1) écrit ces colonnes. Les équipes 2 et 3 n'écrivent pas elles-mêmes les CSV : elles fournissent la fonction `run`.
 
@@ -165,5 +167,4 @@ Par algorithme et par instance (ou famille) :
 1. Les noms et signatures des sections 4 à 6 conviennent-ils ?
 2. Le type `np.int8` pour les solutions et la structure `Instance` conviennent-ils ?
 3. La stratégie de `repair` (retirer d'abord le plus mauvais ratio p/w) vous convient-elle, ou voulez-vous aussi une phase d'ajout glouton ?
-4. Les valeurs de `PROTOCOLE.md` (`k = 5`, 10 répétitions, budget `100 × n`) vous conviennent-elles ?
-5. Le script de benchmark sera livré d'ici le 27 novembre. D'ici là, êtes-vous d'accord pour écrire vos propres CSV d'essai, au même format que la section 7 ?
+4. Les
