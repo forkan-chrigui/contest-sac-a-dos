@@ -52,15 +52,17 @@ Ces instances servent au **réglage des paramètres** et à la répétition gén
 |---|---|---|
 | Solution unique (recherche locale, tabou, recuit, recherche locale probabiliste) | 5 départs × 10 répétitions | 50 |
 | Algorithmes génétiques | 10 répétitions, sans `start_id` | 10 |
-| Déterministes (gloutons, ou recherche locale sans aléa depuis un départ donné) | 1 exécution par départ, avec `run_id = 0` et `seed = 0` | 1 par départ |
+| Gloutons | 1 exécution par instance, avec `run_id = 0` et `seed = 0` | 1 |
+| Recherche locale sans aléa | 1 exécution par départ, avec `run_id = 0` et `seed = 0` | 5 |
 
-Une ligne du CSV est identifiée par (`algorithm`, `variant`, `instance`, `start_id`, `run_id`), avec `seed = run_id` dans tous les cas. Pour les algorithmes génétiques, `start_id` est vide.
+Une ligne du CSV est identifiée par (`algorithm`, `variant`, `instance`, `start_id`, `run_id`), avec `seed = run_id` dans tous les cas. Pour les algorithmes génétiques et les gloutons, `start_id` est vide.
 
 ## 5. Budget d'évaluations
 
 - Le budget est exprimé en **nombre d'évaluations** (`max_evals`), pas en secondes. Cela rend la comparaison indépendante de la machine et du langage.
 - `max_evals = 100 × n`, soit **10 000** pour n = 100 et **50 000** pour n = 500.
 - Le budget est **identique pour tous les algorithmes** sur une instance donnée.
+- Un algorithme ne doit **jamais dépasser** `max_evals` : il vérifie le budget avant chaque évaluation.
 
 ### Définition d'une évaluation
 
@@ -128,7 +130,7 @@ Définis avec Nesrine (M6), calculés par instance puis par famille :
 
 | Date | Étape |
 |---|---|
-| Avant le mercredi 25 nov | Validation finale du protocole et fusion de la PR #3 |
+| Jeudi 26 Nov | Validation finale du protocole et fusion de la PR #3 |
 | 20 → 27 nov | Script de benchmark et répétition générale sur les instances de réglage |
 | Vendredi 27 nov | Point d'étape avec l'enseignante |
 | 28 nov → 4 déc | Relecture et tests de reproductibilité du code des équipes 2 et 3 |
