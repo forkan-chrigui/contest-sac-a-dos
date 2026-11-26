@@ -167,4 +167,5 @@ Par algorithme et par instance (ou famille) :
 1. Les noms et signatures des sections 4 à 6 conviennent-ils ?
 2. Le type `np.int8` pour les solutions et la structure `Instance` conviennent-ils ?
 3. La stratégie de `repair` (retirer d'abord le plus mauvais ratio p/w) vous convient-elle, ou voulez-vous aussi une phase d'ajout glouton ?
-4. Les
+4. Les valeurs de `PROTOCOLE.md` (`k = 5`, 10 répétitions, budget `100 × n`) vous conviennent-elles ?
+5. Le script de benchmark (équipe 1) sera prêt pour la répétition générale, avant le gel du code du 4 décembre. D'ici là, êtes-vous d'accord pour écrire vos propres CSV d'essai, au même format que la section 7 ?
